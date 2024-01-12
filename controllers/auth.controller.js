@@ -1,15 +1,31 @@
-import bcryptjs from 'bcryptjs'
 import User from '../models/user.model.js'
+import { errorHandler } from '../utils/error.js'
+import { hashPassword, comparePassword, createJWT } from '../modules/auth.js'
 
 export const signup = async (req, res, next) => {
     console.log(req.body)
     const { username, email, password } = req.body
     // Error a corregir cuando viene vacio {}
-    const hashedPassword = bcryptjs.hashSync(password, 10)
-    const newUser = new User({ username, email, password: hashedPassword })
     try {
+        const newUser = new User({ username, email, password: hashPassword(password) })
         await newUser.save()
         res.status(201).json('User created successfully')
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const signin = async (req, res, next) => {
+    const { email, password } = req.body
+
+    try {
+        const user = await User.findOne({ email })
+        if (!user) return next(errorHandler(404, 'Invalid credentials!!'))
+        const validPassword = comparePassword(password, user.password)
+        if (!validPassword) return next(errorHandler(401, 'Invalid credentials!'))
+        const token = createJWT(user)
+        const { password: pass, ...rest } = user._doc
+        res.cookie('access_token', token, { httpOnly: true }).status(200).json(rest)
     } catch (error) {
         next(error)
     }
