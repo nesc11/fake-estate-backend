@@ -1,9 +1,11 @@
-import { hashSync } from 'bcryptjs'
-import User from '../models/user.model'
+import bcryptjs from 'bcryptjs'
+import User from '../models/user.model.js'
 
 export const signup = async (req, res, next) => {
+    console.log(req.body)
     const { username, email, password } = req.body
-    const hashedPassword = hashSync(password, 10)
+    // Error a corregir cuando viene vacio {}
+    const hashedPassword = bcryptjs.hashSync(password, 10)
     const newUser = new User({ username, email, password: hashedPassword })
     try {
         await newUser.save()

@@ -1,0 +1,27 @@
+### Retrieve all the movies
+GET http://localhost:3000/api/users
+
+
+### Retrieve a single movie by id
+GET http://localhost:3000/api/users
+
+### Create a movie
+POST http://localhost:3000/api/auth/sign-up
+Content-Type: application/json
+
+{
+    "username": "nesc",
+    "email": "",
+    "password": ""
+}
+
+### Update a movie
+PATCH http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+Content-Type: application/json
+
+{
+    "year": 1975
+}
+
+### Delete a movie
+DELETE http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
